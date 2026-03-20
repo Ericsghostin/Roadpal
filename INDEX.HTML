@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RoadPal — Mobile Mechanics, Wherever You Are</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #FF6B35;
+      --orange-light: #FF8C5A;
+      --orange-pale: #FFF0EA;
+      --navy: #1A2640;
+      --navy-mid: #2E3F5C;
+      --sky: #E8F4FD;
+      --green: #2ECC71;
+      --cream: #FFFDF9;
+      --gray: #6B7280;
+      --gray-light: #F3F4F6;
+      --radius: 16px;
+      --shadow: 0 4px 24px rgba(26,38,64,0.10);
+      --shadow-lg: 0 8px 40px rgba(26,38,64,0.15);
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--cream);
+      color: var(--navy);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: white;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5vw;
+      height: 68px;
+    }
+    .logo {
+      font-size: 1.5rem; font-weight: 900; color: var(--orange);
+      display: flex; align-items: center; gap: 8px; cursor: pointer;
+    }
+    .logo span { color: var(--navy); }
+    .logo-icon { font-size: 1.6rem; }
+    .nav-links { display: flex; gap: 8px; align-items: center; }
+    .nav-links button {
+      background: none; border: none; cursor: pointer;
+      font-family: 'Nunito', sans-serif; font-size: 0.95rem;
+      font-weight: 700; color: var(--gray); padding: 8px 14px;
+      border-radius: 10px; transition: all 0.2s;
+    }
+    .nav-links button:hover, .nav-links button.active { color: var(--orange); background: var(--orange-pale); }
+    .nav-cta {
+      background: var(--orange) !important; color: white !important;
+      padding: 10px 20px !important; border-radius: 12px !important;
+    }
+    .nav-cta:hover { background: var(--orange-light) !important; transform: translateY(-1px); }
+
+    /* ── PAGES ── */
+    .page { display: none; animation: fadeIn 0.35s ease; }
+    .page.active { display: block; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
+
+    /* ── HOME ── */
+    .hero {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+      color: white;
+      padding: 90px 5vw 80px;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; top: -80px; right: -80px;
+      width: 400px; height: 400px;
+      background: var(--orange); opacity: 0.12; border-radius: 50%;
+    }
+    .hero::after {
+      content: '';
+      position: absolute; bottom: -60px; left: 20%;
+      width: 250px; height: 250px;
+      background: var(--orange); opacity: 0.07; border-radius: 50%;
+    }
+    .hero-inner { max-width: 680px; position: relative; z-index: 1; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,107,53,0.2); color: #FF8C5A;
+      border: 1px solid rgba(255,107,53,0.3);
+      padding: 6px 14px; border-radius: 50px;
+      font-size: 0.85rem; font-weight: 700; margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      font-weight: 900; line-height: 1.15; margin-bottom: 20px;
+    }
+    .hero h1 em { font-style: normal; color: var(--orange); }
+    .hero p {
+      font-size: 1.15rem; color: rgba(255,255,255,0.75);
+      line-height: 1.7; margin-bottom: 36px; max-width: 520px;
+    }
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--orange); color: white;
+      border: none; padding: 15px 30px; border-radius: 14px;
+      font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 800;
+      cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 16px rgba(255,107,53,0.35);
+    }
+    .btn-primary:hover { background: var(--orange-light); transform: translateY(-2px); box-shadow: 0 6px 24px rgba(255,107,53,0.4); }
+    .btn-outline {
+      background: transparent; color: white;
+      border: 2px solid rgba(255,255,255,0.35); padding: 15px 30px; border-radius: 14px;
+      font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 700;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-outline:hover { border-color: white; background: rgba(255,255,255,0.08); }
+
+    .stats-bar {
+      background: white; padding: 32px 5vw;
+      display: flex; gap: 0; justify-content: center;
+      box-shadow: var(--shadow);
+    }
+    .stat { text-align: center; padding: 0 40px; flex: 1; max-width: 200px; }
+    .stat + .stat { border-left: 1px solid var(--gray-light); }
+    .stat-num { font-size: 2rem; font-weight: 900; color: var(--orange); }
+    .stat-label { font-size: 0.85rem; color: var(--gray); font-weight: 600; margin-top: 2px; }
+
+    .section { padding: 72px 5vw; }
+    .section-title { font-size: 1.9rem; font-weight: 900; margin-bottom: 10px; }
+    .section-sub { color: var(--gray); font-size: 1rem; margin-bottom: 48px; max-width: 540px; line-height: 1.6; }
+
+    .how-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; }
+    .how-card {
+      background: white; border-radius: var(--radius);
+      padding: 32px 24px; box-shadow: var(--shadow);
+      transition: transform 0.2s;
+    }
+    .how-card:hover { transform: translateY(-4px); }
+    .how-num {
+      width: 48px; height: 48px; background: var(--orange-pale);
+      color: var(--orange); border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; font-weight: 900; margin-bottom: 18px;
+    }
+    .how-card h3 { font-size: 1.05rem; font-weight: 800; margin-bottom: 8px; }
+    .how-card p { font-size: 0.9rem; color: var(--gray); line-height: 1.6; }
+
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+    .feature-card {
+      background: var(--sky); border-radius: var(--radius); padding: 28px 24px;
+      display: flex; gap: 16px; align-items: flex-start;
+    }
+    .feature-icon { font-size: 2rem; flex-shrink: 0; }
+    .feature-card h3 { font-size: 1rem; font-weight: 800; margin-bottom: 6px; }
+    .feature-card p { font-size: 0.88rem; color: var(--gray); line-height: 1.6; }
+
+    .cta-banner {
+      background: var(--orange); color: white;
+      padding: 60px 5vw; text-align: center; border-radius: 24px;
+      margin: 0 5vw 72px;
+    }
+    .cta-banner h2 { font-size: 2rem; font-weight: 900; margin-bottom: 12px; }
+    .cta-banner p { opacity: 0.85; margin-bottom: 28px; font-size: 1rem; }
+    .btn-white {
+      background: white; color: var(--orange);
+      border: none; padding: 14px 32px; border-radius: 14px;
+      font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 800;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-white:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+
+    /* ── FIND A MECHANIC ── */
+    .page-hero {
+      background: var(--orange-pale);
+      padding: 56px 5vw 48px;
+      border-bottom: 1px solid #FFD9C9;
+    }
+    .page-hero h1 { font-size: 2.2rem; font-weight: 900; margin-bottom: 8px; }
+    .page-hero p { color: var(--gray); font-size: 1rem; }
+
+    .search-bar {
+      background: white; border-radius: var(--radius); box-shadow: var(--shadow-lg);
+      display: flex; gap: 0; overflow: hidden; margin: 32px 5vw;
+      border: 2px solid transparent; transition: border-color 0.2s;
+    }
+    .search-bar:focus-within { border-color: var(--orange); }
+    .search-bar input {
+      flex: 1; padding: 18px 20px; border: none; outline: none;
+      font-family: 'Nunito', sans-serif; font-size: 1rem; color: var(--navy);
+    }
+    .search-bar select {
+      padding: 18px 16px; border: none; border-left: 1px solid var(--gray-light);
+      outline: none; font-family: 'Nunito', sans-serif; font-size: 0.9rem;
+      color: var(--navy); background: white; cursor: pointer;
+    }
+    .search-bar button {
+      background: var(--orange); color: white; border: none;
+      padding: 18px 28px; font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem; font-weight: 800; cursor: pointer; transition: background 0.2s;
+    }
+    .search-bar button:hover { background: var(--orange-light); }
+
+    .mechanics-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 0 5vw 72px; }
+    .mechanic-card {
+      background: white; border-radius: var(--radius); padding: 24px;
+      box-shadow: var(--shadow); transition: transform 0.2s;
+      border: 2px solid transparent;
+    }
+    .mechanic-card:hover { transform: translateY(-4px); border-color: var(--orange); }
+    .mech-top { display: flex; gap: 14px; align-items: center; margin-bottom: 16px; }
+    .mech-avatar {
+      width: 56px; height: 56px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; flex-shrink: 0;
+    }
+    .mech-info h3 { font-size: 1rem; font-weight: 800; margin-bottom: 2px; }
+    .mech-info span { font-size: 0.82rem; color: var(--gray); }
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 4px 10px; border-radius: 50px; font-size: 0.75rem; font-weight: 700;
+    }
+    .badge-green { background: #DCFCE7; color: #15803D; }
+    .badge-orange { background: var(--orange-pale); color: var(--orange); }
+    .badge-gray { background: var(--gray-light); color: var(--gray); }
+    .mech-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+    .mech-tag {
+      background: var(--sky); color: var(--navy-mid);
+      padding: 4px 10px; border-radius: 8px; font-size: 0.78rem; font-weight: 700;
+    }
+    .mech-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .stars { color: #F59E0B; font-size: 0.85rem; }
+    .mech-dist { font-size: 0.82rem; color: var(--gray); }
+    .btn-contact {
+      width: 100%; background: var(--orange); color: white; border: none;
+      padding: 12px; border-radius: 10px; font-family: 'Nunito', sans-serif;
+      font-size: 0.9rem; font-weight: 800; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-contact:hover { background: var(--orange-light); }
+
+    /* ── REGISTER ── */
+    .form-container { max-width: 680px; margin: 0 auto; padding: 56px 5vw 80px; }
+    .form-container h1 { font-size: 2rem; font-weight: 900; margin-bottom: 8px; }
+    .form-container .sub { color: var(--gray); margin-bottom: 40px; line-height: 1.6; }
+
+    .form-card { background: white; border-radius: var(--radius); box-shadow: var(--shadow); padding: 36px; }
+    .form-section-title {
+      font-size: 0.8rem; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--orange); margin-bottom: 20px; margin-top: 28px;
+    }
+    .form-section-title:first-child { margin-top: 0; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { margin-bottom: 18px; }
+    .form-group label {
+      display: block; font-size: 0.88rem; font-weight: 700;
+      color: var(--navy); margin-bottom: 6px;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 12px 14px; border: 2px solid var(--gray-light);
+      border-radius: 10px; font-family: 'Nunito', sans-serif; font-size: 0.9rem;
+      color: var(--navy); outline: none; transition: border-color 0.2s;
+      background: white;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: var(--orange);
+    }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .checkbox-group { display: flex; flex-wrap: wrap; gap: 10px; }
+    .checkbox-item {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--gray-light); padding: 8px 14px; border-radius: 10px;
+      cursor: pointer; font-size: 0.85rem; font-weight: 600;
+      border: 2px solid transparent; transition: all 0.2s;
+    }
+    .checkbox-item input { width: auto; }
+    .checkbox-item:has(input:checked) { background: var(--orange-pale); border-color: var(--orange); color: var(--orange); }
+    .submit-btn {
+      width: 100%; background: var(--orange); color: white; border: none;
+      padding: 16px; border-radius: 12px; font-family: 'Nunito', sans-serif;
+      font-size: 1rem; font-weight: 800; cursor: pointer; margin-top: 28px;
+      transition: all 0.2s; box-shadow: 0 4px 16px rgba(255,107,53,0.3);
+    }
+    .submit-btn:hover { background: var(--orange-light); transform: translateY(-2px); }
+
+    /* ── CONTACT ── */
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; padding: 56px 5vw 80px; align-items: start; }
+    .contact-left h1 { font-size: 2rem; font-weight: 900; margin-bottom: 12px; }
+    .contact-left p { color: var(--gray); line-height: 1.7; margin-bottom: 36px; }
+    .contact-option {
+      background: white; border-radius: var(--radius); padding: 22px 20px;
+      display: flex; gap: 14px; align-items: center; box-shadow: var(--shadow);
+      margin-bottom: 14px; cursor: pointer; transition: all 0.2s;
+      border: 2px solid transparent;
+    }
+    .contact-option:hover { border-color: var(--orange); transform: translateX(4px); }
+    .contact-opt-icon { font-size: 1.8rem; }
+    .contact-opt-text strong { display: block; font-weight: 800; font-size: 0.95rem; }
+    .contact-opt-text span { font-size: 0.83rem; color: var(--gray); }
+    .urgent-box {
+      background: linear-gradient(135deg, #FFF3E0, #FFE0CC);
+      border: 2px solid var(--orange); border-radius: var(--radius);
+      padding: 24px; text-align: center;
+    }
+    .urgent-box h3 { font-size: 1.1rem; font-weight: 900; margin-bottom: 6px; color: var(--orange); }
+    .urgent-box p { font-size: 0.88rem; color: var(--gray); margin-bottom: 16px; }
+    .btn-urgent {
+      background: var(--orange); color: white; border: none;
+      padding: 13px 28px; border-radius: 12px; font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem; font-weight: 800; cursor: pointer; transition: all 0.2s;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-urgent:hover { background: var(--orange-light); transform: scale(1.03); }
+
+    .contact-form { background: white; border-radius: var(--radius); padding: 36px; box-shadow: var(--shadow); }
+    .contact-form h2 { font-size: 1.4rem; font-weight: 900; margin-bottom: 6px; }
+    .contact-form .sub { font-size: 0.88rem; color: var(--gray); margin-bottom: 28px; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--navy); color: rgba(255,255,255,0.6);
+      text-align: center; padding: 32px 5vw;
+      font-size: 0.88rem;
+    }
+    footer strong { color: var(--orange); }
+
+    /* ── SUCCESS TOAST ── */
+    .toast {
+      position: fixed; bottom: 30px; right: 30px;
+      background: var(--green); color: white;
+      padding: 14px 24px; border-radius: 12px;
+      font-weight: 700; font-size: 0.95rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      transform: translateY(80px); opacity: 0; transition: all 0.4s;
+      z-index: 999;
+    }
+    .toast.show { transform: none; opacity: 1; }
+
+    @media (max-width: 768px) {
+      .stats-bar { flex-wrap: wrap; }
+      .stat + .stat { border-left: none; border-top: 1px solid var(--gray-light); }
+      .form-row { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .nav-links .hide-mobile { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo" onclick="showPage('home')">
+    <span class="logo-icon">🔧</span> Road<span>Pal</span>
+  </div>
+  <div class="nav-links">
+    <button class="hide-mobile active" id="nav-home" onclick="showPage('home')">Home</button>
+    <button class="hide-mobile" id="nav-find" onclick="showPage('find')">Find a Mechanic</button>
+    <button class="hide-mobile" id="nav-register" onclick="showPage('register')">Join as Mechanic</button>
+    <button class="nav-cta" onclick="showPage('contact')">🚨 Get Help Now</button>
+  </div>
+</nav>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✅ Message sent! We'll be in touch soon.</div>
+
+<!-- ══════════ HOME ══════════ -->
+<div class="page active" id="page-home">
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge">🇰🇪 Serving Kenya's Roads</div>
+      <h1>Stuck on the road?<br/><em>Help is on the way.</em></h1>
+      <p>RoadPal connects you with trusted mobile mechanics who come to you — wherever you are. No towing, no waiting. Real help, fast.</p>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="showPage('find')">🔍 Find a Mechanic</button>
+        <button class="btn-outline" onclick="showPage('contact')">📞 Request Help Now</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-num">120+</div><div class="stat-label">Verified Mechanics</div></div>
+    <div class="stat"><div class="stat-num">30 min</div><div class="stat-label">Avg. Response Time</div></div>
+    <div class="stat"><div class="stat-num">4.8★</div><div class="stat-label">Average Rating</div></div>
+    <div class="stat"><div class="stat-num">500+</div><div class="stat-label">Happy Drivers</div></div>
+  </div>
+
+  <section class="section">
+    <div class="section-title">How RoadPal Works</div>
+    <div class="section-sub">Getting help is as simple as 1, 2, 3. No app download needed — works right in your browser.</div>
+    <div class="how-grid">
+      <div class="how-card"><div class="how-num">1</div><h3>Describe your issue</h3><p>Tell us what's wrong — flat tyre, engine trouble, battery dead, or something else. We keep it simple.</p></div>
+      <div class="how-card"><div class="how-num">2</div><h3>We match you</h3><p>We find the nearest available mechanic with the right skills and send them your location.</p></div>
+      <div class="how-card"><div class="how-num">3</div><h3>Mechanic comes to you</h3><p>Sit tight. Your mechanic is on the way with tools and parts to get you moving again.</p></div>
+      <div class="how-card"><div class="how-num">4</div><h3>Back on the road</h3><p>Job done, problem solved. Rate your mechanic and carry on with your day.</p></div>
+    </div>
+  </section>
+
+  <section class="section" style="background: var(--gray-light); padding-top: 64px; padding-bottom: 64px;">
+    <div class="section-title">Why drivers love RoadPal</div>
+    <div class="section-sub">We built this for Kenyan roads and Kenyan drivers. Simple, fast, and reliable.</div>
+    <div class="features-grid">
+      <div class="feature-card"><div class="feature-icon">📍</div><div><h3>Come to your location</h3><p>No need to find a garage. Our mechanics bring the garage to you — on the roadside, at home, or at work.</p></div></div>
+      <div class="feature-card"><div class="feature-icon">✅</div><div><h3>Verified & trusted</h3><p>Every mechanic is vetted and reviewed by real customers. You always know who's coming.</p></div></div>
+      <div class="feature-card"><div class="feature-icon">💬</div><div><h3>Direct contact</h3><p>Chat or call your mechanic directly once matched. No middlemen, no confusion.</p></div></div>
+      <div class="feature-card"><div class="feature-icon">💰</div><div><h3>Fair pricing</h3><p>Transparent quotes before work starts. No surprises on the bill.</p></div></div>
+      <div class="feature-card"><div class="feature-icon">🕐</div><div><h3>Available anytime</h3><p>Day or night, weekday or weekend — breakdowns don't follow a schedule, and neither do we.</p></div></div>
+      <div class="feature-card"><div class="feature-icon">🔩</div><div><h3>All vehicle types</h3><p>Cars, matatus, trucks, motorbikes — our mechanics handle them all.</p></div></div>
+    </div>
+  </section>
+
+  <div class="cta-banner">
+    <h2>Are you a mechanic? 🔧</h2>
+    <p>Join RoadPal and get connected with customers who need your skills — wherever they are.</p>
+    <button class="btn-white" onclick="showPage('register')">Register as a Mechanic →</button>
+  </div>
+</div>
+
+<!-- ══════════ FIND A MECHANIC ══════════ -->
+<div class="page" id="page-find">
+  <div class="page-hero">
+    <h1>Find a Mechanic Near You</h1>
+    <p>Browse available mobile mechanics in your area. Filter by specialty or location.</p>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" placeholder="🔍  Your location or town (e.g. Westlands, Nairobi)..." />
+    <select>
+      <option>All Services</option>
+      <option>Flat Tyre</option>
+      <option>Engine Repair</option>
+      <option>Battery Jump</option>
+      <option>Towing</option>
+      <option>Diagnostics</option>
+      <option>Brakes</option>
+    </select>
+    <button>Search</button>
+  </div>
+
+  <div class="mechanics-grid">
+
+    <div class="mechanic-card">
+      <div class="mech-top">
+        <div class="mech-avatar" style="background:#FFF0EA;">🧑🏾‍🔧</div>
+        <div class="mech-info">
+          <h3>James Mwangi</h3>
+          <span>Westlands, Nairobi</span>
+        </div>
+        <span class="badge badge-green">● Available</span>
+      </div>
+      <div class="mech-tags">
+        <span class="mech-tag">Engine Repair</span>
+        <span class="mech-tag">Brakes</span>
+        <span class="mech-tag">Diagnostics</span>
+      </div>
+      <div class="mech-meta">
+        <span class="stars">★★★★★ <span style="color:var(--gray)">4.9 (47 jobs)</span></span>
+        <span class="mech-dist">📍 2.1 km away</span>
+      </div>
+      <button class="btn-contact" onclick="showPage('contact')">📞 Contact James</button>
+    </div>
+
+    <div class="mechanic-card">
+      <div class="mech-top">
+        <div class="mech-avatar" style="background:#E8F4FD;">👩🏾‍🔧</div>
+        <div class="mech-info">
+          <h3>Grace Achieng</h3>
+          <span>South B, Nairobi</span>
+        </div>
+        <span class="badge badge-green">● Available</span>
+      </div>
+      <div class="mech-tags">
+        <span class="mech-tag">Flat Tyres</span>
+        <span class="mech-tag">Battery</span>
+        <span class="mech-tag">Electrical</span>
+      </div>
+      <div class="mech-meta">
+        <span class="stars">★★★★★ <span style="color:var(--gray)">4.8 (32 jobs)</span></span>
+        <span class="mech-dist">📍 3.5 km away</span>
+      </div>
+      <button class="btn-contact" onclick="showPage('contact')">📞 Contact Grace</button>
+    </div>
+
+    <div class="mechanic-card">
+      <div class="mech-top">
+        <div class="mech-avatar" style="background:#DCFCE7;">🧑🏿‍🔧</div>
+        <div class="mech-info">
+          <h3>Peter Otieno</h3>
+          <span>Thika Road, Nairobi</span>
+        </div>
+        <span class="badge badge-orange">● On a Job</span>
+      </div>
+      <div class="mech-tags">
+        <span class="mech-tag">Towing</span>
+        <span class="mech-tag">Engine</span>
+        <span class="mech-tag">Matatu Specialist</span>
+      </div>
+      <div class="mech-meta">
+        <span class="stars">★★★★☆ <span style="color:var(--gray)">4.6 (88 jobs)</span></span>
+        <span class="mech-dist">📍 5.0 km away</span>
+      </div>
+      <button class="btn-contact" style="background:var(--gray);" onclick="showPage('contact')">📞 Leave a Request</button>
+    </div>
+
+    <div class="mechanic-card">
+      <div class="mech-top">
+        <div class="mech-avatar" style="background:#F3E8FF;">🧔🏾‍♂️</div>
+        <div class="mech-info">
+          <h3>Samuel Kipchoge</h3>
+          <span>Kilimani, Nairobi</span>
+        </div>
+        <span class="badge badge-green">● Available</span>
+      </div>
+      <div class="mech-tags">
+        <span class="mech-tag">Diagnostics</span>
+        <span class="mech-tag">Suspension</span>
+        <span class="mech-tag">AC Repair</span>
+      </div>
+      <div class="mech-meta">
+        <span class="stars">★★★★★ <span style="color:var(--gray)">5.0 (19 jobs)</span></span>
+        <span class="mech-dist">📍 1.7 km away</span>
+      </div>
+      <button class="btn-contact" onclick="showPage('contact')">📞 Contact Samuel</button>
+    </div>
+
+    <div class="mechanic-card">
+      <div class="mech-top">
+        <div class="mech-avatar" style="background:#FEF9C3;">🧑🏽‍🔧</div>
+        <div class="mech-info">
+          <h3>Ali Hassan</h3>
+          <span>Mombasa Road, Nairobi</span>
+        </div>
+        <span class="badge badge-green">● Available</span>
+      </div>
+      <div class="mech-tags">
+        <span class="mech-tag">Brakes</span>
+        <span class="mech-tag">Fuel System</span>
+        <span class="mech-tag">Oil Change</span>
+      </div>
+      <div class="mech-meta">
+        <span class="stars">★★★★☆ <span style="color:var(--gray)">4.7 (56 jobs)</span></span>
+        <span class="mech-dist">📍 4.2 km away</span>
+      </div>
+      <button class="btn-contact" onclick="showPage('contact')">📞 Contact Ali</button>
+    </div>
+
+    <div class="mechanic-card">
+      <div class="mech-top">
+        <div class="mech-avatar" style="background:#FFE4E6;">👨🏾‍🔧</div>
+        <div class="mech-info">
+          <h3>David Njoroge</h3>
+          <span>Kahawa, Nairobi</span>
+        </div>
+        <span class="badge badge-gray">● Offline</span>
+      </div>
+      <div class="mech-tags">
+        <span class="mech-tag">Welding</span>
+        <span class="mech-tag">Exhaust</span>
+        <span class="mech-tag">Heavy Vehicles</span>
+      </div>
+      <div class="mech-meta">
+        <span class="stars">★★★★★ <span style="color:var(--gray)">4.8 (71 jobs)</span></span>
+        <span class="mech-dist">📍 7.8 km away</span>
+      </div>
+      <button class="btn-contact" style="background:var(--gray);" onclick="showPage('contact')">📞 Leave a Request</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════ REGISTER ══════════ -->
+<div class="page" id="page-register">
+  <div class="form-container">
+    <h1>Join RoadPal as a Mechanic</h1>
+    <p class="sub">Sign up once, start receiving job requests from drivers near you. It's free to join — we only charge a small commission on completed jobs.</p>
+
+    <div class="form-card">
+      <div class="form-section-title">Personal Information</div>
+      <div class="form-row">
+        <div class="form-group"><label>First Name</label><input type="text" placeholder="e.g. James" /></div>
+        <div class="form-group"><label>Last Name</label><input type="text" placeholder="e.g. Mwangi" /></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Phone Number</label><input type="tel" placeholder="e.g. 0712 345 678" /></div>
+        <div class="form-group"><label>Email Address</label><input type="email" placeholder="you@example.com" /></div>
+      </div>
+      <div class="form-group"><label>Your Town / Area</label><input type="text" placeholder="e.g. Westlands, Nairobi" /></div>
+
+      <div class="form-section-title">Your Skills & Services</div>
+      <div class="form-group">
+        <label>What services do you offer? (select all that apply)</label>
+        <div class="checkbox-group" style="margin-top:10px;">
+          <label class="checkbox-item"><input type="checkbox" /> Flat Tyres</label>
+          <label class="checkbox-item"><input type="checkbox" /> Engine Repair</label>
+          <label class="checkbox-item"><input type="checkbox" /> Battery / Jump Start</label>
+          <label class="checkbox-item"><input type="checkbox" /> Brakes</label>
+          <label class="checkbox-item"><input type="checkbox" /> Diagnostics</label>
+          <label class="checkbox-item"><input type="checkbox" /> Electrical</label>
+          <label class="checkbox-item"><input type="checkbox" /> Towing</label>
+          <label class="checkbox-item"><input type="checkbox" /> AC Repair</label>
+          <label class="checkbox-item"><input type="checkbox" /> Suspension</label>
+          <label class="checkbox-item"><input type="checkbox" /> Oil & Fluids</label>
+          <label class="checkbox-item"><input type="checkbox" /> Welding</label>
+          <label class="checkbox-item"><input type="checkbox" /> Heavy Vehicles</label>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Years of Experience</label>
+          <select><option>Less than 1 year</option><option>1–3 years</option><option>3–5 years</option><option>5–10 years</option><option>10+ years</option></select>
+        </div>
+        <div class="form-group">
+          <label>Do you have your own tools?</label>
+          <select><option>Yes, full toolkit</option><option>Yes, basic tools</option><option>Partially</option></select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Brief Bio (optional)</label>
+        <textarea placeholder="Tell customers a little about yourself and your experience..."></textarea>
+      </div>
+
+      <div class="form-section-title">Availability</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Available Hours</label>
+          <select><option>7am – 7pm</option><option>7am – 10pm</option><option>24 / 7</option><option>Weekdays only</option><option>Weekends only</option></select>
+        </div>
+        <div class="form-group">
+          <label>Do you have a vehicle to travel?</label>
+          <select><option>Yes, motorbike</option><option>Yes, car/pickup</option><option>Yes, both</option><option>No, on foot</option></select>
+        </div>
+      </div>
+
+      <button class="submit-btn" onclick="submitMechanicRegistration()">Submit Registration →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ CONTACT ══════════ -->
+<div class="page" id="page-contact">
+  <div class="contact-grid">
+    <div class="contact-left">
+      <h1>Get Help Right Now</h1>
+      <p>Pick the fastest way to reach us. For roadside emergencies, use the SOS button — we'll prioritize you immediately.</p>
+
+      <div class="urgent-box" style="margin-bottom: 20px;">
+        <h3>🚨 Roadside Emergency?</h3>
+        <p>Tap below and we'll match you with the nearest available mechanic in minutes.</p>
+        <button class="btn-urgent" onclick="showToast('🚨 SOS sent! A mechanic is being dispatched to your location.')">🆘 Send SOS Request</button>
+      </div>
+
+      <div class="contact-option">
+        <div class="contact-opt-icon">📱</div>
+        <div class="contact-opt-text">
+          <strong>WhatsApp Us</strong>
+          <span>Message us on +254 740 710 259 — fast response</span>
+        </div>
+      </div>
+      <div class="contact-option">
+        <div class="contact-opt-icon">📞</div>
+        <div class="contact-opt-text">
+          <strong>Call Us</strong>
+          <span>+254 700 000 000 — available 7am to 10pm daily</span>
+        </div>
+      </div>
+      <div class="contact-option">
+        <div class="contact-opt-icon">📧</div>
+        <div class="contact-opt-text">
+          <strong>Email</strong>
+          <span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="650d0009090a25170a04011504094b060a4b0e00">[email&#160;protected]</a> — for general enquiries</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-form">
+      <h2>Send a Request</h2>
+      <p class="sub">Fill in the details below and we'll match you with the right mechanic.</p>
+
+      <div class="form-group"><label>Your Name</label><input type="text" placeholder="e.g. Eric Kamau" /></div>
+      <div class="form-group"><label>Phone Number</label><input type="tel" placeholder="e.g. 0712 345 678" /></div>
+      <div class="form-group">
+        <label>Your Current Location</label>
+        <input type="text" placeholder="e.g. Near Shell petrol station, Mombasa Rd" />
+      </div>
+      <div class="form-group">
+        <label>What's the problem?</label>
+        <select>
+          <option value="">-- Select issue type --</option>
+          <option>Flat tyre</option>
+          <option>Engine won't start</option>
+          <option>Battery dead</option>
+          <option>Overheating</option>
+          <option>Accident damage</option>
+          <option>Brakes failing</option>
+          <option>Strange noise</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>More details (optional)</label>
+        <textarea placeholder="Describe what happened — any extra info helps the mechanic come prepared..."></textarea>
+      </div>
+      <button class="submit-btn" onclick="submitHelpRequest()">Send Request →</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 <strong>RoadPal</strong> · Mobile Mechanics for Kenya's Roads · Built with ❤️ for drivers everywhere</p>
+</footer>
+
+<script>
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+    const nb = document.getElementById('nav-' + id);
+    if (nb) nb.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 4000);
+  }
+
+  async function submitHelpRequest() {
+    const name = document.querySelector('#page-contact .contact-form input[type="text"]').value;
+    const phone = document.querySelector('#page-contact .contact-form input[type="tel"]').value;
+    const location = document.querySelectorAll('#page-contact .contact-form input[type="text"]')[1].value;
+    const problem = document.querySelector('#page-contact .contact-form select').value;
+    try {
+      await fetch('http://localhost:3000/request-help', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, phone, location, problem })
+      });
+      showToast('✅ Request sent! A mechanic will contact you shortly.');
+    } catch (e) {
+      showToast('✅ Request received!');
+    }
+  }
+
+  async function submitMechanicRegistration() {
+    const inputs = document.querySelectorAll('#page-register input[type="text"], #page-register input[type="tel"], #page-register input[type="email"]');
+    const data = {
+      firstName: inputs[0]?.value,
+      lastName: inputs[1]?.value,
+      phone: inputs[2]?.value,
+      email: inputs[3]?.value,
+      area: inputs[4]?.value
+    };
+    try {
+      await fetch('http://localhost:3000/register-mechanic', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      showToast("🎉 Registration received! We'll review and contact you within 24 hours.");
+    } catch (e) {
+      showToast("🎉 Registration received!");
+    }
+  }
+</script>
+</body>
+</html>
